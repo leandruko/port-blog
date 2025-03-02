@@ -1,6 +1,32 @@
-import Image from "next/image";
+"use client";
+
+import { createClient } from '@supabase/supabase-js';
+import { useEffect, useState } from 'react';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 export default function Home() {
+  const [proyectos, setProyectos] = useState([]);
+
+  useEffect(() => {
+    const fetchProyectos = async () => {
+      let { data, error } = await supabase.from("proyectos").select("*");
+      
+      if (error) {
+        console.error("Error al obtener proyectos:", error.message);
+      } else {
+        console.log("Proyectos obtenidos:", data);
+        setProyectos(data);
+      }
+    };
+  
+    fetchProyectos();
+  }, []);
+  
+
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900">
       {/* Navbar */}
@@ -32,10 +58,16 @@ export default function Home() {
       <section id="proyectos" className="py-20 text-center">
         <h3 className="text-3xl font-bold">Proyectos</h3>
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 container mx-auto px-4">
-          {/* Aquí se cargarán proyectos dinámicamente */}
-          <div className="bg-white p-4 shadow-md rounded-lg">Proyecto 1</div>
-          <div className="bg-white p-4 shadow-md rounded-lg">Proyecto 2</div>
-          <div className="bg-white p-4 shadow-md rounded-lg">Proyecto 3</div>
+          {proyectos.length > 0 ? (
+            proyectos.map((proyecto) => (
+              <div key={proyecto.id} className="bg-white p-4 shadow-md rounded-lg">
+                <h4 className="font-semibold">{proyecto.nombre}</h4>
+                <p className="text-sm mt-2">{proyecto.descripcion}</p>
+              </div>
+            ))
+          ) : (
+            <p>Cargando proyectos...</p>
+          )}
         </div>
       </section>
 
