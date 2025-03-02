@@ -10,6 +10,8 @@ const supabase = createClient(
 
 export default function Home() {
   const [proyectos, setProyectos] = useState([]);
+  const [error, setError] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     const fetchProyectos = async () => {
@@ -30,12 +32,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900">
       {/* Navbar */}
-      <nav className="bg-white shadow-md p-4 fixed w-full top-0">
+      <nav className={`p-4 fixed w-full top-0 shadow-md ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold">Mi Portafolio</h1>
-          <div className="space-x-4">
+          <div className="space-x-4 flex items-center">
             <a href="#proyectos" className="hover:text-blue-500">Proyectos</a>
             <a href="#contacto" className="hover:text-blue-500">Contacto</a>
+            <button 
+              onClick={() => setDarkMode(!darkMode)} 
+              className="p-2 rounded-full bg-gray-300 dark:bg-gray-700">
+              {darkMode ? '☀️' : '🌙'}
+            </button>
           </div>
         </div>
       </nav>
